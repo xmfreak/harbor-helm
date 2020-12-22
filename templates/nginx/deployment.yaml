@@ -34,6 +34,7 @@ spec:
       serviceAccountName: {{ .Values.nginx.serviceAccountName }}
 {{- end }}
       securityContext:
+        runAsUser: 10000
         fsGroup: 10000
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -86,11 +87,7 @@ spec:
       {{- if .Values.expose.tls.enabled }}
       - name: certificate
         secret:
-          {{- if .Values.expose.tls.secretName }}
-          secretName: {{ .Values.expose.tls.secretName }}
-          {{- else }}
-          secretName: {{ template "harbor.nginx" . }}
-          {{- end }}
+          secretName: {{ template "harbor.tlsSecretForNginx" . }}
       {{- end }}
     {{- with .Values.nginx.nodeSelector }}
       nodeSelector:
